@@ -1,0 +1,9 @@
+1.1.0: Tidied up docu and DESCRIPTION, gets thru package checks, sneakified for BioC-type packages that may not be available. Ready for R-universe! Note there's explicit dependence on 'mvbutils' now (or at least for now), rather than manual copying-in functions.
+
+1.0.28: added 'get_genotype_encoding' and adapted nearby docu. Added 'snpgarbage' micro dataset
+
+1.0.27: minor tweak to 'ridder', including docu
+
+7/2023 (v1.0.22): added 'rowid_field' support, plus various sanity checks for 'info' and 'locinfo' etc
+
+5/2024: lots of bugfixes, and tweaks to the 'read_vcf...' functions.

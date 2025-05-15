@@ -1,0 +1,89 @@
+export( "define_genotypes",
+"diploido",
+"diplos",
+"diplos<-",
+"get_genotype_encoding",
+"inv_CDF_SPA2",
+"loc.ar",
+"make_genopairer",
+"NGS_count_ar",
+"NGS_count_ar.matrix",
+"print.NGS_count_ar",
+"read_snpgds2snpgeno",
+"read_vcf2NGS_count_ar",
+"read_vcf2snpgeno",
+"renorm_SPA",
+"renorm_SPA_cumul",
+"ridder",
+"rowid_field",
+"snpgeno",
+"snpgeno.default",
+"str.loc.ar",
+"str.NGS_count_ar",
+"str.snpgeno",
+"unloc.ar",
+"with_rowid_field")
+import( utils, except=c("help","?"))
+import( stats)
+import( mvbutils, except=c("xfactor"))
+import( atease)
+S3method( "[", "diploido")
+S3method( "[", "loc.ar")
+S3method( "[", "NGS_count_ar")
+S3method( "[", "snpgeno")
+S3method( "[", "with_rowid_field")
+S3method( "[<-", "diploido")
+S3method( "[<-", "snpgeno")
+S3method( "[<-", "with_rowid_field")
+S3method( "$", "loc.ar")
+S3method( "$", "NGS_count_ar")
+S3method( "$", "snpgeno")
+S3method( "$<-", "loc.ar")
+S3method( "$<-", "NGS_count_ar")
+S3method( "$<-", "snpgeno")
+S3method( "cbind", "loc.ar")
+S3method( "cbind", "NGS_count_ar")
+S3method( "cbind", "snpgeno")
+S3method( "cbind", "with_rowid_field")
+S3method( "rbind", "loc.ar")
+S3method( "rbind", "NGS_count_ar")
+S3method( "rbind", "snpgeno")
+S3method( "rbind", "with_rowid_field")
+S3method( "as.data.frame", "loc.ar")
+S3method( "format", "diploido")
+S3method( "is.na<-", "diploido")
+S3method( "print", "diploido")
+S3method( "print", "loc.ar")
+S3method( "print", "NGS_count_ar")
+S3method( "print", "snpgeno")
+S3method( "with", "loc.ar")
+S3method( "as.character", "snpgeno")
+S3method( "dim", "diploido")
+S3method( "dim", "NGS_count_ar")
+S3method( "dimnames", "diploido")
+S3method( "is.array", "diploido")
+S3method( "is.matrix", "diploido")
+S3method( "is.na", "diploido")
+S3method( "length", "diploido")
+S3method( "==", "snpgeno")
+S3method( "!=", "snpgeno")
+S3method( "head", "loc.ar")
+S3method( "head", "NGS_count_ar")
+S3method( "head", "snpgeno")
+S3method( "str", "loc.ar")
+S3method( "str", "NGS_count_ar")
+S3method( "str", "snpgeno")
+S3method( "tail", "loc.ar")
+S3method( "tail", "NGS_count_ar")
+S3method( "tail", "snpgeno")
+S3method( "as.diploido", "character")
+S3method( "NGS_count_ar", "default")
+S3method( "NGS_count_ar", "loc.ar")
+S3method( "NGS_count_ar", "matrix")
+S3method( "rowid_field", "default")
+S3method( "rowid_field", "snpgeno")
+S3method( "snpgeno", "default")
+S3method( "snpgeno", "loc.ar")
+S3method( "with_rowid_field", "data.frame")
+S3method( "with_rowid_field", "snpgeno")
+
