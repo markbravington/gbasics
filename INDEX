@@ -5,7 +5,7 @@ loc.ar                                 Create & manipulate locus-arrays
 make_genopairer                        Mapping between pairs of possible genotypes and compressed form
 NGS_count_ar                           Next-Gen sequencer count data
 read_snpgds2snpgeno                    Create a 'snpgeno' from 'snpgds' file or object
-read_vcf2NGS_count_ar                  Read VCF genotype data
+read_vcf2snpgeno                       Read VCF genotype data
 renorm_SPA                             Saddlepoint approximation support
 ridder                                 Parallel root-finder
 snpgarbage                             Specimen 'snpgeno' object filled with garbage data

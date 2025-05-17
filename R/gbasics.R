@@ -97,7 +97,9 @@ return( x)
 
 
 ".onLoad" <-
-function( libname, pkgname){}
+function( libname, pkgname){
+  dedoc_namespace( pkgname) # drop plain-text docu (it's just for maintenance)
+}
 
 
 "[.diploido" <-
@@ -1448,16 +1450,14 @@ Next-Gen sequencer count data
 
 DESCRIPTION
 
-'NGS_count_ar' is a class for raw counts by sequence-variant within locus, per sample. The number of alleles (variants) can differ between loci. It's not used by any functions in the 'kinference' package, which expects 'snpgeno' objects throughout. However, it's used extensively in CSIRO's 'genocalldart' package, which is not yet public (Jan 2023). It's an early stage in processing DartSeq/DartCap data- long before genotypes are called- and can also be used to hold similar data from other formats such as VCF, via 'read_vcf2NGS_count_ar()'. It's also a generic S3 method for creating such an object, with one low-level method for matrices (which you probably shouldn't call yourself) and another method for converting from 'loc.ar' objects, which will presumably have come from 'read_count_dart' or such. The default method (ie if 'NGS_count_ar' is called on any old rubbish) will 'stop()', by design. See *Details* for internal structure, and what you can add/expect.
+'NGS_count_ar' is a class for raw counts by sequence-variant within locus, per sample. The number of alleles (variants) can differ between loci. It's not used by any functions in the 'kinference' package, which expects 'snpgeno' objects throughout. However, it's used extensively in CSIRO's private 'genocalldart' package. It's an early stage in processing DartSeq/DartCap/DartTag data--- long before genotypes are called--- and can also be used to hold similar data from other formats such as VCF, via 'read_vcf2NGS_count_ar()'. It's also a generic S3 method for creating such an object, with one low-level method for matrices (which you probably shouldn't call yourself) and another method for converting from 'loc.ar' objects, which will presumably have come from 'genocalldart::read_count_dart' or such. The default method (ie if 'NGS_count_ar' is called on any old rubbish) will 'stop()', by design. See *Details* for internal structure, and what you can add/expect.
 
 There are methods for basic stuff: try 'methods(class="NGS_count_ar")'. 'dim(x)' returns '#samples*#loci'; for the number of alleles, use 'nrow( x$seqinfo)'. The 'print' method tries to make things clearly readable, and has a few extra arguments to help control that- see *Arguments*. Subsetting can have up to 3 indices 'i', 'j', and 'k'; 'j' can be numeric, logical, or character (i.e. locus names, which are matched against 'x$locinfo$Locus'). If 'k' is omitted, another 'NGS_count_ar' object is returned, as controlled by 'i' and/or 'j'. If 'length(k)==1', then the result is a 2D array of sample-by-locus. If 'length(k)>1', the result is a 3D array of sample-by-locus-by-allele, with NA counts added when 'k' refers to an allele "number" that doesn't exist for that locus; obviously, all loci then have the same number of "alleles" in the new structure. 'dimnames' are set for the 2nd (locus) dimension only. These "pure array" results don't preserve the detailed sample or locus information (except via the 'dimnames') but can be useful for subsequent manipulation.
 
 
 .OBSCURE.NOTE
 
-A similar class is 'loc.ar', which preserves counts but allows max 3 non-null alleles per locus.
-
-It's not clear which of 'loc.ar' or 'NGS_count_ar' is "more advanced"- depends on the context. However, most later stages in 'genocalldart' pipeline (eg for bait selection) require 'loc.ar'. To go back the other way, you probably need to call 'pick_ref_alt' (qv); see the pipeline examples.
+A similar class is 'loc.ar', which preserves counts but allows max 3 non-null alleles per locus. It's not clear which of 'loc.ar' or 'NGS_count_ar' is "more advanced"- depends on the context. However, most later stages in 'genocalldart' pipeline (eg for bait selection) require 'loc.ar'. To go back the other way, you probably need to call 'pick_ref_alt' (qv); see the pipeline examples.
 
 
 USAGE
@@ -1524,7 +1524,7 @@ You can also add other attributes that apply to the whole object. One that's use
 
 SEE.ALSO
 
-loc.ar, snpgeno
+'loc.ar', 'snpgeno'
 }")
 
 )
@@ -2081,17 +2081,17 @@ structure( function(
     plateField = NULL
 ){
 #############
-  # anti CRANkery
-  re_bloody_quire_namespace <- get( 're' %&% 'quireNamespace', baseenv()) 
-
 stopifnot(
-    re_bloody_quire_namespace( 'SNPRelate'),
+    requireNamespace( 'SNPRelate'),
     !missing( locusID),
     !missing( sampleID)
   )
 
   # Avoid having to specify every function via SNPRelate::blah
   e <- new.env( parent=asNamespace( 'SNPRelate'))
+  # Can't do "multiple inheritance" from several packages, but this is sole mvbutils usage:
+  e$FOR <- mvbutils::FOR 
+  
   e$snpgeno <- snpgeno
   # Must also copy in parameters...
   for( x in names( formals( sys.function()))){
@@ -2142,8 +2142,10 @@ stopifnot(
     cgenos[ genos==1] <- 'AB'
     cgenos[ genos==2] <- 'AAO'
 
-    define_genotypes()
-  return( snpgeno( cgenos, diplos=genotypes4_ambig, info= info, locinfo= locinfo))
+    # Return just from evalq()
+  return( snpgeno( cgenos, 
+      diplos= get_genotype_encoding()$genotypes4_ambig, 
+      info= info, locinfo= locinfo))
   })
 
 return(snpg)
@@ -2203,16 +2205,15 @@ EXAMPLES
 #    install.packages("BiocManager")
 # BiocManager::install("SNPRelate")
 
-re_bloody_quire <- get( sprintf( '%s%s', 're', 'quire'), baseenv()) # anti CRANkery
-if( re_bloody_quire(SNPRelate)){
+if( requireNamespace( 'SNPRelate')){
   # Simplest possible case (no locus or sample metadata other than IDs;
   # will add an all-one plate field):
-  sg <- read_snpgds2snpgeno(filename = snpgdsExampleFileName(),
+  sg <- read_snpgds2snpgeno(filename = SNPRelate::snpgdsExampleFileName(),
       locusID = "snp.id", sampleID = "sample.id")
   # More likely: either sample or locus metadata is a single frame,
   # and the other is a bunch of separate fields. In this case, sample
   # metadata is a single frame and locus metadata is separate fields.
-  sg <- read_snpgds2snpgeno(filename = snpgdsExampleFileName(),
+  sg <- read_snpgds2snpgeno(filename = SNPRelate::snpgdsExampleFileName(),
      locusID = "snp.id", sampleID = "sample.id",
      infoFrame = "sample.annot",
      locinfoFields = c("snp.rs.id", "snp.position", "snp.chromosome", "snp.allele"))
@@ -2222,7 +2223,7 @@ if( re_bloody_quire(SNPRelate)){
 )
 
 "read_vcf2NGS_count_ar" <-
-structure( function( 
+function( 
   vfilename, 
   biforce=TRUE, 
   BLOCK=1000, 
@@ -2230,7 +2231,8 @@ structure( function(
   majjik_bleeble=''
 ){
 ## Reads counts from VCF file (in AD format) into 'NGS_count_ar'
-## ... or reads (biallelic) genotypes directly into 'snpgeno'; ref=A, any-alt=B, nulls acknowledged
+## ... or reads (biallelic) genotypes 
+## directly into 'snpgeno'; ref=A, any-alt=B, nulls acknowledged
 ## NB I did try package 'vcfR', but (1) it has huge dependencies
 ## and (2) it doesn't actually extract what we want anyway
 ## So read the file ourselves...
@@ -2550,32 +2552,51 @@ return( geno)
 
 return( NGS)
 }
+
+
+"read_vcf2snpgeno" <-
+structure( function( 
+  vfilename, 
+  BLOCK=formals( read_vcf2NGS_count_ar)$BLOCK,
+  allow_disordered_unphased= TRUE
+){
+## Just read genotypes from VCF file, not the counts
+## Uses machinery of function below
+## Default for BLOCK is same as function below
+  res <- read_vcf2NGS_count_ar( 
+      vfilename, 
+      BLOCK=BLOCK,   
+      allow_disordered_unphased= allow_disordered_unphased,
+      majjik_bleeble='jUst_geNOtypes')
+  res@call <- deparse1( sys.call())
+return( res)
+}
 , doc =  mvbutils::docattr( r"{
-read_vcf2NGS_count_ar      package:gbasics
-read_vcf2snpgeno
+read_vcf2snpgeno    package:gbasics
+read_vcf2NGS_count_ar      
+
 
 Read VCF genotype data
 
 
 DESCRIPTION
 
-(Tries to) read the genotype part of a VCF file, and loads it into a 'gbasics' object: either 'NGS_count_ar' (sequence counts), or 'snpgeno' (genotype calls). These functions discard the "metadata" at the top of the file, and the "data lines" describing parts of the genome.
+'read_vcf2snpgeno' and 'read_vcf2NGS_count_ar' try to read the genotype part of a VCF file, and load it into a 'gbasics' object: either a 'snpgeno' (genotype calls) or a 'NGS_count_ar' (sequence counts). They discard the "metadata" at the top of the file, and the "data lines" describing parts of the genome.
 
-The 'snpgeno' version expects a "GT" subfield containing genotypes. The 'NGS_count_ar' expects an "AD" subfield (Allele Depth).
+The 'snpgeno' version expects a "GT" subfield containing genotypes. The 'NGS_count_ar' expects a subfield "AD" (Allele Depth).
 
 VCF format is complicated, and this isn't fully tested; the goal is to produce something that will get through the next few steps of the kinference process. If you want something more sophisticated, please feel free to hack this code (and if you do a good job of it, please let us know!). There are other R packages out there which- to _some_ extent- handle VCF, and you may be able to use one of those to create a 'snpgds', which can then be converted by 'sngeno' (to the latter class).
 
 
 USAGE
 
-
-read_vcf2NGS_count_ar(
-  vfilename, biforce = TRUE, BLOCK = 1000, 
-    allow_disordered_unphased= TRUE, majjik_bleeble = "")
-# BLOCK has same default below
+# BLOCK has same default in both functions
 read_vcf2snpgeno( 
   vfilename, BLOCK=formals( read_vcf2NGS_count_ar)$BLOCK,
   allow_disordered_unphased= TRUE)
+read_vcf2NGS_count_ar(
+  vfilename, biforce = TRUE, BLOCK = 1000, 
+    allow_disordered_unphased= TRUE, majjik_bleeble = "")
 
 
 ARGUMENTS
@@ -2623,8 +2644,11 @@ EXAMPLES
 
 # package BinaryDosage has some nice small VCFs
 # The one below just has genotypes
-re_bloody_quire <- get( sprintf( '%s%s', 're', 'quire'), baseenv()) # anti CRANky
-if( re_bloody_quire( 'BinaryDosage')){
+# But I'm not putting in Suggests; hassle of versions etc
+# Workaround for CRANkiness:
+re_bloody_quireNamespace <- get( 
+    sprintf( '%s%s', 're', 'quireNamespace'), baseenv()) # anti CRANky
+if( re_bloody_quireNamespace( 'BinaryDosage')){
   thrubb <- read_vcf2snpgeno( system.file( 
       'extdata/set1b.vcf', package='BinaryDosage'))
   print( thrubb)
@@ -2635,25 +2659,6 @@ if( re_bloody_quire( 'BinaryDosage')){
 }")
 
 )
-
-"read_vcf2snpgeno" <-
-function( 
-  vfilename, 
-  BLOCK=formals( read_vcf2NGS_count_ar)$BLOCK,
-  allow_disordered_unphased= TRUE
-){
-## Just read genotypes from VCF file, not the counts
-## Uses machinery of function below
-## Default for BLOCK is same as function below
-  res <- read_vcf2NGS_count_ar( 
-      vfilename, 
-      BLOCK=BLOCK,   
-      allow_disordered_unphased= allow_disordered_unphased,
-      majjik_bleeble='jUst_geNOtypes')
-  res@call <- deparse1( sys.call())
-return( res)
-}
-
 
 "rel.delta" <-
 function(old, new) {

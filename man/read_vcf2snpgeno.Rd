@@ -1,22 +1,22 @@
-\name{read_vcf2NGS_count_ar}
-\alias{read_vcf2NGS_count_ar}
+\name{read_vcf2snpgeno}
 \alias{read_vcf2snpgeno}
+\alias{read_vcf2NGS_count_ar}
 \title{Read VCF genotype data}
 \description{
-(Tries to) read the genotype part of a VCF file, and loads it into a \code{\link{gbasics}} object: either \code{\link{NGS_count_ar}} (sequence counts), or \code{\link{snpgeno}} (genotype calls). These functions discard the "metadata" at the top of the file, and the "data lines" describing parts of the genome.
+\code{read_vcf2snpgeno} and \code{read_vcf2NGS_count_ar} try to read the genotype part of a VCF file, and load it into a \code{\link{gbasics}} object: either a \code{\link{snpgeno}} (genotype calls) or a \code{\link{NGS_count_ar}} (sequence counts). They discard the "metadata" at the top of the file, and the "data lines" describing parts of the genome.
 
-The \code{\link{snpgeno}} version expects a "GT" subfield containing genotypes. The \code{\link{NGS_count_ar}} expects an "AD" subfield (Allele Depth).
+The \code{\link{snpgeno}} version expects a "GT" subfield containing genotypes. The \code{\link{NGS_count_ar}} expects a subfield "AD" (Allele Depth).
 
 VCF format is complicated, and this isn't fully tested; the goal is to produce something that will get through the next few steps of the kinference process. If you want something more sophisticated, please feel free to hack this code (and if you do a good job of it, please let us know!). There are other R{} packages out there which- to \emph{some} extent- handle VCF, and you may be able to use one of those to create a \code{snpgds}, which can then be converted by \code{sngeno} (to the latter class).
 }
 \usage{
-read_vcf2NGS_count_ar(
-  vfilename, biforce = TRUE, BLOCK = 1000,
-    allow_disordered_unphased= TRUE, majjik_bleeble = "")
-# BLOCK has same default below
+# BLOCK has same default in both functions
 read_vcf2snpgeno(
   vfilename, BLOCK=formals( read_vcf2NGS_count_ar)$BLOCK,
   allow_disordered_unphased= TRUE)
+read_vcf2NGS_count_ar(
+  vfilename, biforce = TRUE, BLOCK = 1000,
+    allow_disordered_unphased= TRUE, majjik_bleeble = "")
 }
 \arguments{
 \item{  vfilename}{Filename, or an existing connection that is already open for reading. If \code{vfilename} is a connection, it is \emph{not} closed on exit.}
@@ -42,8 +42,11 @@ read_vcf2snpgeno(
 \examples{
 # package BinaryDosage has some nice small VCFs
 # The one below just has genotypes
-re_bloody_quire <- get( sprintf( '\%s\%s', 're', 'quire'), baseenv()) # anti CRANky
-if( re_bloody_quire( 'BinaryDosage'))\{
+# But I'm not putting in Suggests; hassle of versions etc
+# Workaround for CRANkiness:
+re_bloody_quireNamespace <- get(
+    sprintf( '\%s\%s', 're', 'quireNamespace'), baseenv()) # anti CRANky
+if( re_bloody_quireNamespace( 'BinaryDosage'))\{
   thrubb <- read_vcf2snpgeno( system.file(
       'extdata/set1b.vcf', package='BinaryDosage'))
   print( thrubb)

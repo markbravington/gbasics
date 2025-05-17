@@ -5,13 +5,10 @@
 \alias{print}
 \title{Next-Gen sequencer count data}
 \description{
-\code{NGS_count_ar} is a class for raw counts by sequence-variant within locus, per sample. The number of alleles (variants) can differ between loci. It's not used by any functions in the \pkg{kinference} package, which expects \code{\link{snpgeno}} objects throughout. However, it's used extensively in CSIRO's \code{genocalldart} package, which is not yet public (Jan 2023). It's an early stage in processing DartSeq/DartCap data- long before genotypes are called- and can also be used to hold similar data from other formats such as VCF, via \code{read_vcf2NGS_count_ar()}. It's also a generic S3 method for creating such an object, with one low-level method for matrices (which you probably shouldn't call yourself) and another method for converting from \code{\link{loc.ar}} objects, which will presumably have come from \code{read_count_dart} or such. The default method (ie if \code{NGS_count_ar} is called on any old rubbish) will \code{stop()}, by design. See \bold{Details} for internal structure, and what you can add/expect.
+\code{NGS_count_ar} is a class for raw counts by sequence-variant within locus, per sample. The number of alleles (variants) can differ between loci. It's not used by any functions in the \pkg{kinference} package, which expects \code{\link{snpgeno}} objects throughout. However, it's used extensively in CSIRO's private \code{genocalldart} package. It's an early stage in processing DartSeq/DartCap/DartTag data--- long before genotypes are called--- and can also be used to hold similar data from other formats such as VCF, via \code{read_vcf2NGS_count_ar()}. It's also a generic S3 method for creating such an object, with one low-level method for matrices (which you probably shouldn't call yourself) and another method for converting from \code{\link{loc.ar}} objects, which will presumably have come from \code{genocalldart::read_count_dart} or such. The default method (ie if \code{NGS_count_ar} is called on any old rubbish) will \code{stop()}, by design. See \bold{Details} for internal structure, and what you can add/expect.
 
 There are methods for basic stuff: try \code{methods(class="NGS_count_ar")}. \code{dim(x)} returns \code{#samples*#loci}; for the number of alleles, use \code{nrow( x$seqinfo)}. The \code{print} method tries to make things clearly readable, and has a few extra arguments to help control that- see \bold{Arguments}. Subsetting can have up to 3 indices \code{i}, \code{j}, and \code{k}; \code{j} can be numeric, logical, or character (i.e. locus names, which are matched against \code{x$locinfo$Locus}). If \code{k} is omitted, another \code{NGS_count_ar} object is returned, as controlled by \code{i} and/or \code{j}. If \code{length(k)==1}, then the result is a 2D array of sample-by-locus. If \code{length(k)>1}, the result is a 3D array of sample-by-locus-by-allele, with NA counts added when \code{k} refers to an allele "number" that doesn't exist for that locus; obviously, all loci then have the same number of "alleles" in the new structure. \code{dimnames} are set for the 2nd (locus) dimension only. These "pure array" results don't preserve the detailed sample or locus information (except via the \code{dimnames}) but can be useful for subsequent manipulation.
-\subsection{Obscure note}{
-A similar class is \code{\link{loc.ar}}, which preserves counts but allows max 3 non-null alleles per locus.
-
-It's not clear which of \code{\link{loc.ar}} or \code{NGS_count_ar} is "more advanced"- depends on the context. However, most later stages in \code{genocalldart} pipeline (eg for bait selection) require \code{\link{loc.ar}}. To go back the other way, you probably need to call \code{pick_ref_alt} (qv); see the pipeline examples.
+\subsection{Obscure note}{A similar class is \code{\link{loc.ar}}, which preserves counts but allows max 3 non-null alleles per locus. It's not clear which of \code{\link{loc.ar}} or \code{NGS_count_ar} is "more advanced"- depends on the context. However, most later stages in \code{genocalldart} pipeline (eg for bait selection) require \code{\link{loc.ar}}. To go back the other way, you probably need to call \code{pick_ref_alt} (qv); see the pipeline examples.
 }
 }
 \usage{
@@ -59,6 +56,6 @@ The key fields in \code{x$locinfo} (there might be others) are
 
 You can also add other attributes that apply to the whole object. One that's used in \code{genocalldart} is \code{mean_fish_tot} (used in norming count data from new samples), but it's rather dicey for general use because it does depend on the set of loci; so if you subset by loci, things (should) change...
 }
-\seealso{loc.ar, snpgeno
+\seealso{\code{\link{loc.ar}}, \code{\link{snpgeno}}
 }
 \keyword{misc}

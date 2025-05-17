@@ -31,16 +31,15 @@ read_snpgds2snpgeno(
 #if (!requireNamespace("BiocManager", quietly=TRUE))
 #    install.packages("BiocManager")
 # BiocManager::install("SNPRelate")
-re_bloody_quire <- get( sprintf( '\%s\%s', 're', 'quire'), baseenv()) # anti CRANkery
-if( re_bloody_quire(SNPRelate))\{
+if( requireNamespace( 'SNPRelate'))\{
   # Simplest possible case (no locus or sample metadata other than IDs;
   # will add an all-one plate field):
-  sg <- read_snpgds2snpgeno(filename = snpgdsExampleFileName(),
+  sg <- read_snpgds2snpgeno(filename = SNPRelate::snpgdsExampleFileName(),
       locusID = "snp.id", sampleID = "sample.id")
   # More likely: either sample or locus metadata is a single frame,
   # and the other is a bunch of separate fields. In this case, sample
   # metadata is a single frame and locus metadata is separate fields.
-  sg <- read_snpgds2snpgeno(filename = snpgdsExampleFileName(),
+  sg <- read_snpgds2snpgeno(filename = SNPRelate::snpgdsExampleFileName(),
      locusID = "snp.id", sampleID = "sample.id",
      infoFrame = "sample.annot",
      locinfoFields = c("snp.rs.id", "snp.position", "snp.chromosome", "snp.allele"))
