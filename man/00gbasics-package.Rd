@@ -26,8 +26,15 @@ One common phenomenon is for genotyping software to put "empty" or "dunno" calls
 To continue the rant: sometimes people use "null" loosely to mean "double-null" call- so that "there are very few nulls in my dataset" might really just mean "there are very few double-nulls or missings". Double-nulls aren't the main problem; \emph{single} nulls are much commoner, not directly visible, and can have a major effect on kin-finding.
 
 Different genotyping methods might handle nulls differently; eg some methods \emph{can} infer the presence of a single null, albeit with uncertainty. Some methods intrinsically lead to many more nulls than other methods. Also, it's not just about nulls: some methods and datasets might conceivably have a lot of loci with more than two non-null alleles (on the way to "microhaplotypes"), which are potentially powerful for kin-finding. To allow flexibility, the \code{\link{snpgeno}} class can therefore accept different sets of possible genotype-calls, as defined by the "genotype encoding" in \code{\link{diplos}}. You will have to decide which encoding-set to use for your data. Only a few encodings are accepted by \code{kinference}, but it might be possible to convert a non-standard encoding manually before passing it to \code{kinference}; see \code{\link{get_genotype_encoding}} and \code{\link{snpgeno}}.
+
+..WHAT.IF.I.REALLY.DON'T.HAVE.NULLS?
+
+If you are sure that your data should not contain nulls, then you can still use the 4-way encoding and so you can load your data with the standard functions like \code{read_<blah>2snpgeno}; of course, the data shouldn't contain any double-null genotypes. When it comes to estimating allele frequencies, you can enforce a null allele frequency of zero via \code{kinference::est_ALF_nonulls}, and all the QC and kin-finding steps will respect it; your homozygotes will be treated as true homozygotes!
 }
-\subsection{Not currently true}{Package \pkg{gbasics} also includes some utility routines which duplicate stuff in other MVB-written packages, and which are included here to avoid excessive dependencies. These are being tidied up... (What \emph{is} true, though, is that there's a medium-term plan to split \code{mvbutils} into two packages, one with completely uncontroversial utilities needed by other packages such as \code{gbasics}, and one with all the complicated and sneaky code for package maintenance and R{} life management that's only for enlightened users such as our lizard-people overlords ;)
+\subsection{Not currently true}{
+The documentation used to say this: package \pkg{gbasics} also includes some utility routines which duplicate stuff in other MVB-written packages, and which are included here to avoid excessive dependencies. These are being tidied up...
+
+But it's no longer true; the functions have been left in \code{mvbutils} and there's no plans to manually import them into \code{gbasics}. What \emph{is} true, though, is that there's a medium-term plan to split \code{mvbutils} into two packages, one with completely uncontroversial utilities needed by other packages such as \code{gbasics}, and one with all the complicated and sneaky code for package maintenance and R{} life management that's only for enlightened users, such as our lizard-people overlords, or me ;).
 }
 }
 \keyword{misc}
