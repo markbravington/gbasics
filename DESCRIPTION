@@ -11,4 +11,4 @@ Suggests: tinytest, SNPRelate
 #RoxygenNote: 7.2.3
 KeepPlaintextDoco: YES
 Encoding: UTF-8
-Version: 1.1.13
+Version: 1.1.14

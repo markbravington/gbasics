@@ -531,15 +531,6 @@ function(e1, e2) {
 }
 
 
-"add_list_defaults" <-
-function( l, ...) {
-###### Add defaults to list 'l' if not already in 'l'
-  defaults <- list(...)
-  l <- c( l, defaults %without.name% names( l))
-return( l)
-}
-
-
 "as.character.snpgeno" <-
 function( x, ...) {
   y <- matrix( '', nrow( x), ncol( x))
