@@ -5,10 +5,10 @@ Description: S3 classes for manipulating genetic data, primarily NGS SNPs (seque
 Maintainer: Mark Bravington <markb1@summerinsouth.net>
 License: GPL
 biocViews: 
-Imports: utils, stats, mvbutils, atease
+Imports: utils, stats, mvbutils (>= 2.12), atease
 Suggests: tinytest, SNPRelate
 #Roxygen: list(markdown = TRUE)
 #RoxygenNote: 7.2.3
 KeepPlaintextDoco: YES
 Encoding: UTF-8
-Version: 1.1.14
+Version: 1.1.16
