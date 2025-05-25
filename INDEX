@@ -1,14 +1,14 @@
-gbasics-package                        Genotype storage ultimately for Close-Kin Mark-Recapture
-diploido                               Class for one diploid locus
-get_genotype_encoding                  Diploid genotype encodings
-loc.ar                                 Create & manipulate locus-arrays
-make_genopairer                        Mapping between pairs of possible genotypes and compressed form
-NGS_count_ar                           Next-Gen sequencer count data
-read_snpgds2snpgeno                    Create a 'snpgeno' from 'snpgds' file or object
-read_vcf2snpgeno                       Read VCF genotype data
-renorm_SPA                             Saddlepoint approximation support
-ridder                                 Parallel root-finder
-snpgarbage                             Specimen 'snpgeno' object filled with garbage data
-snpgeno                                Class for SNP genotypes
-str.snpgeno                            Summaries for various genotype classes
-with_rowid_field                       Facilitate sample-based subscripting of sngpenos
+gbasics-package                                 Genotype storage ultimately for Close-Kin Mark-Recapture
+diploido                                        Class for one diploid locus
+get_genotype_encoding                           Diploid genotype encodings
+loc.ar                                          Create & manipulate locus-arrays
+make_genopairer                                 Mapping between pairs of possible genotypes and compressed form
+NGS_count_ar                                    Next-Gen sequencer count data
+read_snpgds2snpgeno                             Create a 'snpgeno' from 'snpgds' file or object
+read_vcf2snpgeno                                Read VCF genotype data
+renorm_SPA                                      Saddlepoint approximation support
+ridder                                          Parallel root-finder
+snpgarbage                                      Specimen 'snpgeno' object filled with garbage data
+snpgeno                                         Class for SNP genotypes
+str.snpgeno                                     Summaries for various genotype classes
+with_rowid_field                                Facilitate sample-based subscripting of sngpenos

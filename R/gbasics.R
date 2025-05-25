@@ -3501,9 +3501,9 @@ Facilitate sample-based subscripting of sngpenos
 
 DESCRIPTION
 
-'with_rowid_field' can be applied to a 'snpgeno' to specify which "sample ID field" to use when subsetting a 'snpgeno' by row (ie sample), using character "sample ID" of your choice instead of numeric or logical index.
+'with_rowid_field' can be applied to a 'snpgeno' to specify which "sample ID field" to use when subsetting a 'snpgeno' by row (ie sample), using character "sample ID" of your choice instead of numeric or logical index. This is often a good idea. If the rowid field has been set, then because 'find_HSPs' etc will by default label its kin-pairs with that field, rather than with row-numbers; then, if you subset the main dataset, it's easy to just subset the kin-pairs too (you don't have to keep track of changing row numbers).
 
-You can already subscript a 'snpgeno' by locus with a character index, which is looked up in '<snpgeno>@locinfo$Locus'. The choice of "Locus" for field name is pretty obvious and uncontroversial! But for samples, there's no corresponding uniquely obvious field name so you can use 'with_rowid_field' to specify the one you want.
+You can already subscript a 'snpgeno' by locus with a character index, which is looked up in '<snpgeno>$locinfo$Locus'. The choice of "Locus" for field name is pretty obvious and uncontroversial! But for samples, there's no corresponding uniquely obvious field name so you can use 'with_rowid_field' to specify the one you want.
 
 Specifically, that field in '<snpgeno>$info' will be used to look up character-mode 'i' in '<snpgeno>[i,...]' subsetting. Then you can subset to samples using their "identifiers", rather than having to use logical or numeric lookup. Also, if 'with_rowid_field' has been called, then subsequent calls to 'find_HSPs' (qv) and friends will return the rowid_fields in 'i' and 'j' rather than row-numbers, which is much less error-prone for downstream use.
 
@@ -3548,8 +3548,8 @@ try( sn[ 'samp_X12',]) # crash
 sn <- with_rowid_field( sn, 'sampID')
 sn[ 'samp_X12',] # goodo
 rowid_field( sn) # [1] "sampID"
-rowid_field( sn@info) # ditto
-sn@info[ 'samp_X12', ] # whatever
+rowid_field( sn$info) # ditto
+sn$info[ 'samp_X12', ] # whatever
 ## End(Not run)
 }")
 

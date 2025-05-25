@@ -3,9 +3,9 @@
 \alias{rowid_field}
 \title{Facilitate sample-based subscripting of sngpenos}
 \description{
-\code{with_rowid_field} can be applied to a \code{\link{snpgeno}} to specify which "sample ID field" to use when subsetting a \code{\link{snpgeno}} by row (ie sample), using character "sample ID" of your choice instead of numeric or logical index.
+\code{with_rowid_field} can be applied to a \code{\link{snpgeno}} to specify which "sample ID field" to use when subsetting a \code{\link{snpgeno}} by row (ie sample), using character "sample ID" of your choice instead of numeric or logical index. This is often a good idea. If the rowid field has been set, then because \code{find_HSPs} etc will by default label its kin-pairs with that field, rather than with row-numbers; then, if you subset the main dataset, it's easy to just subset the kin-pairs too (you don't have to keep track of changing row numbers).
 
-You can already subscript a \code{\link{snpgeno}} by locus with a character index, which is looked up in \code{<snpgeno>@locinfo$Locus}. The choice of "Locus" for field name is pretty obvious and uncontroversial! But for samples, there's no corresponding uniquely obvious field name so you can use \code{with_rowid_field} to specify the one you want.
+You can already subscript a \code{\link{snpgeno}} by locus with a character index, which is looked up in \code{<snpgeno>$locinfo$Locus}. The choice of "Locus" for field name is pretty obvious and uncontroversial! But for samples, there's no corresponding uniquely obvious field name so you can use \code{with_rowid_field} to specify the one you want.
 
 Specifically, that field in \code{<snpgeno>$info} will be used to look up character-mode \code{i} in \code{<snpgeno>[i,...]} subsetting. Then you can subset to samples using their "identifiers", rather than having to use logical or numeric lookup. Also, if \code{with_rowid_field} has been called, then subsequent calls to \code{find_HSPs} (qv) and friends will return the rowid_fields in \code{i} and \code{j} rather than row-numbers, which is much less error-prone for downstream use.
 
@@ -37,8 +37,8 @@ try( sn[ 'samp_X12',]) # crash
 sn <- with_rowid_field( sn, 'sampID')
 sn[ 'samp_X12',] # goodo
 rowid_field( sn) # [1] "sampID"
-rowid_field( sn@info) # ditto
-sn@info[ 'samp_X12', ] # whatever
+rowid_field( sn$info) # ditto
+sn$info[ 'samp_X12', ] # whatever
 }
 }
 \keyword{misc}
